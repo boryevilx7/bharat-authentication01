@@ -1,0 +1,865 @@
+================================================================================
+                      BHARAT AUTHENTICATION SYSTEM
+                    Complete Project Documentation
+================================================================================
+
+PROJECT NAME: Bharat Authentication
+VERSION: 1.0.0
+FRAMEWORK: React 19 + TypeScript + Vite 6
+BACKEND: Supabase (PostgreSQL + Authentication)
+DEPLOYMENT: Web Application (localhost:5176)
+
+================================================================================
+                          PROJECT OVERVIEW
+================================================================================
+
+Bharat Authentication is a modern, secure web-based authentication system that
+provides enterprise-grade user management with multiple authentication methods.
+The system features a beautiful UI with animated backgrounds, real-time security
+monitoring dashboard, and comprehensive user verification capabilities.
+
+PURPOSE:
+- Provide secure user authentication and authorization
+- Manage user accounts with email verification
+- Monitor security activities and threats
+- Offer seamless login experience with multiple providers
+
+TARGET USERS:
+- End users who need secure account access
+- Administrators who monitor security metrics
+- Organizations requiring authentication infrastructure
+
+================================================================================
+                    USER ACTIVITIES & FEATURES
+================================================================================
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ 1. LANDING PAGE ACTIVITIES                                                  │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+✓ View Animated WebGL Shader Background
+  - Dynamic visual effects with gradient colors
+  - Interactive 3D graphics powered by Three.js
+  - Responsive design adapting to screen size
+
+✓ Access Login Portal
+  - Click "Login" button to open authentication modal
+  - View system status (Active/Inactive indicator)
+  - Read platform information and security features
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ 2. AUTHENTICATION ACTIVITIES                                                │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+A. USER SIGNUP (Create New Account)
+   ✓ Email/Password Registration
+     - Enter valid email address
+     - Create strong password (minimum 6 characters)
+     - Receive confirmation email
+     - Click verification link in email
+     - Account activated upon verification
+   
+   ✓ Google OAuth Signup
+     - Click "Sign up with Google" button
+     - Redirected to Google sign-in page
+     - Authorize Bharat Authentication access
+     - Automatic account creation
+     - Instant dashboard access (no email verification needed)
+
+B. USER LOGIN (Access Existing Account)
+   ✓ Email/Password Login
+     - Enter registered email
+     - Enter password
+     - Click "Login" button
+     - Access granted after verification
+   
+   ✓ Google OAuth Login
+     - Click "Sign up with Google" button
+     - One-click authentication
+     - Automatic session management
+     - Seamless dashboard access
+
+C. ACCOUNT VERIFICATION
+   ✓ Email Confirmation Process
+     - Check email inbox after signup
+     - Open confirmation email from "BHARAT AUTHH"
+     - Click verification link
+     - Redirected back to application
+     - Account confirmed and ready to use
+
+D. SESSION MANAGEMENT
+   ✓ Automatic Session Handling
+     - Stay logged in across browser refreshes
+     - Secure token-based authentication
+     - Session expiry management
+     - Automatic logout on session end
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ 3. DASHBOARD ACTIVITIES (After Login)                                       │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+A. SECURITY MONITORING
+   ✓ View Real-time Metrics
+     - Total scans performed
+     - Active threats detected
+     - System vulnerabilities count
+     - Scan success rate percentage
+   
+   ✓ Quick Statistics Overview
+     - Active endpoints monitoring
+     - Pending scans queue
+     - Total users count
+     - Uptime percentage
+
+B. THREAT DETECTION & SCANNING
+   ✓ Perform Security Scans
+     - Enter target URL for scanning
+     - Select scan type (Quick/Deep/Full)
+     - View scan progress with loading animation
+     - Review scan results instantly
+   
+   ✓ View Scan Results
+     - Threat severity levels (Critical/High/Medium/Low)
+     - Detailed vulnerability reports
+     - Recommended actions
+     - Export scan reports
+
+C. SCAN HISTORY MANAGEMENT
+   ✓ Browse Previous Scans
+     - View complete scan history
+     - Filter by date, type, or status
+     - Search specific targets
+     - Sort by various parameters
+   
+   ✓ Analyze Historical Data
+     - Track scan trends over time
+     - Compare multiple scan results
+     - Identify recurring issues
+     - Generate historical reports
+
+D. THREAT FEED MONITORING
+   ✓ Real-time Threat Intelligence
+     - Live feed of detected threats
+     - Threat type categorization
+     - Timestamp information
+     - Severity indicators
+     - Source tracking
+
+E. USER PROFILE MANAGEMENT
+   ✓ View Profile Information
+     - Display user email
+     - Account creation date
+     - Last login timestamp
+     - Authentication method used
+   
+   ✓ Account Settings
+     - Update profile information
+     - Change password (email/password accounts)
+     - Manage connected OAuth accounts
+     - Set notification preferences
+
+F. LOGOUT FUNCTIONALITY
+   ✓ Secure Logout
+     - Click "Logout" in sidebar
+     - Session terminated immediately
+     - Redirect to landing page
+     - All tokens cleared from browser
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ 4. VISUAL & INTERACTION FEATURES                                            │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+✓ Animated Backgrounds
+  - Landing page: WebGL shader effects with dynamic gradients
+  - Login modal: Flowing SVG paths animation (36 layered paths)
+  - Dashboard: Clean, professional interface
+  - Smooth transitions between all states
+
+✓ Toast Notifications
+  - Success messages (green) for completed actions
+  - Error messages (red) for failed operations
+  - Info messages (blue) for general information
+  - Warning messages (yellow) for important notices
+  - Auto-dismiss after 3-5 seconds
+
+✓ Loading States
+  - Spinner animations during authentication
+  - Progress bars for scanning operations
+  - Skeleton loaders for data fetching
+  - "Loading..." text with animated icon
+
+✓ Responsive Design
+  - Mobile-friendly interface
+  - Tablet optimization
+  - Desktop full-screen experience
+  - Adaptive layouts for all screen sizes
+
+✓ Dark/Light Mode Support
+  - Automatic theme detection
+  - Manual theme toggle (if implemented)
+  - Consistent styling across modes
+  - Accessible color contrasts
+
+================================================================================
+                      SYSTEM ARCHITECTURE
+================================================================================
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ FRONTEND ARCHITECTURE (React 19 + TypeScript)                               │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+CLIENT LAYER (Browser)
+├── React Application (SPA - Single Page Application)
+│   ├── App.tsx (Root Component)
+│   │   ├── Authentication State Management
+│   │   ├── Session Checking
+│   │   ├── Route Protection
+│   │   └── User Email Storage
+│   │
+│   ├── Landing Page
+│   │   ├── WebGLBackground.tsx (Three.js 3D Graphics)
+│   │   ├── Hero Section (Title + Description)
+│   │   ├── Login Button
+│   │   └── System Status Indicator
+│   │
+│   ├── Authentication Modal
+│   │   ├── LoginModal.tsx (Dialog Wrapper)
+│   │   └── Login1.tsx (Authentication Form)
+│   │       ├── Email/Password Input Fields
+│   │       ├── Google OAuth Button
+│   │       ├── Login/Signup Toggle
+│   │       ├── BackgroundPaths.tsx (Animated SVG)
+│   │       └── Form Validation
+│   │
+│   └── Dashboard (Protected Route)
+│       ├── Layout Components
+│       │   ├── Header.tsx (Top navigation)
+│       │   └── Sidebar.tsx (Navigation menu + Logout)
+│       │
+│       ├── Dashboard Panels
+│       │   ├── MetricCard.tsx (Statistics display)
+│       │   ├── QuickStats.tsx (Overview metrics)
+│       │   ├── ScanPanel.tsx (URL scanning interface)
+│       │   ├── ResultsPanel.tsx (Scan results display)
+│       │   ├── HistoryView.tsx (Scan history table)
+│       │   ├── ThreatFeed.tsx (Real-time threats)
+│       │   └── ScanningLoader.tsx (Loading animation)
+│       │
+│       └── State Management
+│           ├── User Session State
+│           ├── Scan Data State
+│           ├── History State
+│           └── Real-time Updates
+│
+└── UI Component Library (Shadcn + Radix UI)
+    ├── Primitives: Button, Input, Dialog, Tabs, etc.
+    ├── Styled Components: Custom Tailwind CSS
+    └── Utility Functions: cn(), variants, etc.
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ BACKEND ARCHITECTURE (Supabase - Backend as a Service)                      │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+SUPABASE CLOUD SERVICES
+├── Authentication Service
+│   ├── Email/Password Provider
+│   │   ├── User Registration
+│   │   ├── Email Verification
+│   │   ├── Password Hashing (bcrypt)
+│   │   ├── Login Validation
+│   │   └── Password Reset Flow
+│   │
+│   ├── Google OAuth Provider
+│   │   ├── OAuth 2.0 Flow
+│   │   ├── Google Sign-In Integration
+│   │   ├── Token Exchange
+│   │   ├── User Profile Fetching
+│   │   └── Automatic Account Creation
+│   │
+│   ├── Session Management
+│   │   ├── JWT Token Generation
+│   │   ├── Token Refresh Mechanism
+│   │   ├── Session Expiry Handling
+│   │   └── Multi-device Support
+│   │
+│   └── Security Features
+│       ├── Rate Limiting
+│       ├── Brute Force Protection
+│       ├── CORS Configuration
+│       └── Redirect URL Validation
+│
+├── PostgreSQL Database
+│   ├── auth.users (Supabase System Table)
+│   │   ├── id (UUID)
+│   │   ├── email (TEXT)
+│   │   ├── encrypted_password (TEXT)
+│   │   ├── email_confirmed_at (TIMESTAMP)
+│   │   ├── last_sign_in_at (TIMESTAMP)
+│   │   ├── created_at (TIMESTAMP)
+│   │   ├── provider (TEXT - email/google)
+│   │   └── metadata (JSONB - profile data)
+│   │
+│   ├── auth.identities (OAuth Identities)
+│   │   ├── User OAuth connections
+│   │   ├── Google account linkage
+│   │   └── Provider-specific data
+│   │
+│   └── Custom Tables (Future Implementation)
+│       ├── user_profiles (Extended user data)
+│       ├── scan_history (Scan records)
+│       ├── threat_logs (Detected threats)
+│       └── audit_logs (System activities)
+│
+├── Email Service (SMTP Integration)
+│   ├── Email Providers (Choose One)
+│   │   ├── Resend (smtp.resend.com:587)
+│   │   ├── Brevo/Sendinblue (smtp-relay.brevo.com:587)
+│   │   ├── SendGrid (smtp.sendgrid.net:587)
+│   │   └── Gmail SMTP (smtp.gmail.com:587/465)
+│   │
+│   ├── Email Templates
+│   │   ├── Confirmation Email
+│   │   ├── Password Reset Email
+│   │   ├── Welcome Email
+│   │   └── Security Alerts
+│   │
+│   └── Email Configuration
+│       ├── Sender: BHARAT AUTHH
+│       ├── From Email: configured sender
+│       ├── Custom branding
+│       └── Rate limiting (60s between emails)
+│
+└── API & Security
+    ├── REST API (Auto-generated by Supabase)
+    ├── Row Level Security (RLS) Policies
+    ├── API Key Authentication (ANON key)
+    ├── HTTPS Encryption (TLS 1.3)
+    └── Data Encryption at Rest
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ COMMUNICATION FLOW (Client ↔ Server)                                        │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+AUTHENTICATION FLOW:
+┌──────────┐         ┌───────────┐         ┌──────────┐
+│ Browser  │────────▶│  Supabase │────────▶│ Database │
+│  (React) │◀────────│Client SDK │◀────────│(Postgres)│
+└──────────┘         └───────────┘         └──────────┘
+     │                     │                     │
+     │ 1. signUp()         │                     │
+     ├────────────────────▶│ INSERT user         │
+     │                     ├────────────────────▶│
+     │                     │◀────────────────────┤
+     │                     │ SMTP: Send Email    │
+     │◀────────────────────┤                     │
+     │ 2. Confirmation     │                     │
+     │                     │                     │
+     │ 3. signIn()         │                     │
+     ├────────────────────▶│ SELECT + VALIDATE   │
+     │                     ├────────────────────▶│
+     │                     │◀────────────────────┤
+     │ 4. JWT Token        │                     │
+     │◀────────────────────┤                     │
+     │ 5. Store Session    │                     │
+     └─────────────────────┘                     │
+
+GOOGLE OAUTH FLOW:
+┌──────────┐    ┌──────────┐    ┌───────────┐    ┌──────────┐
+│ Browser  │───▶│  Google  │───▶│  Supabase │───▶│ Database │
+│  (React) │◀───│  OAuth   │◀───│   Auth    │◀───│(Postgres)│
+└──────────┘    └──────────┘    └───────────┘    └──────────┘
+     │               │                 │                │
+     │ 1. OAuth Init │                 │                │
+     ├──────────────▶│                 │                │
+     │ 2. User Login │                 │                │
+     │ & Authorize   │                 │                │
+     │◀──────────────┤                 │                │
+     │ 3. Auth Code  │                 │                │
+     │───────────────┼────────────────▶│                │
+     │               │ 4. Exchange     │                │
+     │               │   Code→Token    │                │
+     │               │◀────────────────┤                │
+     │               │ 5. User Profile │                │
+     │               │────────────────▶│ 6. CREATE/     │
+     │               │                 │    UPDATE user │
+     │               │                 ├───────────────▶│
+     │ 7. JWT + Session                │◀───────────────┤
+     │◀────────────────────────────────┤                │
+     └─────────────────────────────────┘                │
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ DATA FLOW ARCHITECTURE                                                      │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+STATE MANAGEMENT:
+React Component State → Local State (useState)
+Session State → Supabase Client (localStorage)
+User Data → Context API / Props
+Real-time Updates → Supabase Realtime Subscriptions
+
+DATA STORAGE:
+Browser:
+  ├── LocalStorage: Supabase session tokens
+  ├── SessionStorage: Temporary data
+  └── Cookies: Session management
+
+Supabase Cloud:
+  ├── PostgreSQL: User accounts, profiles
+  ├── Auth Schema: Authentication data
+  └── Custom Tables: Application data
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ SECURITY ARCHITECTURE                                                       │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+FRONTEND SECURITY:
+✓ Environment Variables (.env.local)
+  - VITE_SUPABASE_URL (Public)
+  - VITE_SUPABASE_ANON_KEY (Public, rate-limited)
+  
+✓ Route Protection
+  - Redirect unauthenticated users to login
+  - Check session before rendering dashboard
+  - Automatic logout on token expiry
+
+✓ Input Validation
+  - Email format validation
+  - Password strength requirements
+  - XSS prevention (React auto-escaping)
+  - CSRF protection via tokens
+
+BACKEND SECURITY (Supabase):
+✓ Authentication
+  - JWT tokens (signed with secret key)
+  - Token expiry (configurable)
+  - Refresh token rotation
+  - Secure password hashing (bcrypt)
+
+✓ Database Security
+  - Row Level Security (RLS) policies
+  - User can only access own data
+  - Admin roles for elevated access
+  - SQL injection prevention
+
+✓ API Security
+  - HTTPS only (TLS encryption)
+  - CORS configuration
+  - Rate limiting per IP/user
+  - API key authentication
+
+✓ OAuth Security
+  - State parameter validation
+  - PKCE flow (Proof Key for Code Exchange)
+  - Redirect URI whitelisting
+  - Scope limitation
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ DEPLOYMENT ARCHITECTURE                                                     │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+DEVELOPMENT ENVIRONMENT:
+├── Local Development Server (Vite)
+│   ├── Port: 5176
+│   ├── Hot Module Replacement (HMR)
+│   ├── Fast refresh for React components
+│   └── Source maps for debugging
+│
+├── Build Process
+│   ├── TypeScript compilation
+│   ├── Tailwind CSS processing
+│   ├── Asset optimization
+│   ├── Code minification
+│   └── Tree shaking (unused code removal)
+│
+└── Preview Server
+    ├── Port: 8080
+    ├── Production build preview
+    └── Performance testing
+
+PRODUCTION DEPLOYMENT OPTIONS:
+├── Vercel (Recommended for React/Vite)
+│   ├── Automatic deployments from Git
+│   ├── Edge network distribution
+│   ├── HTTPS included
+│   └── Environment variables management
+│
+├── Netlify
+│   ├── Continuous deployment
+│   ├── Form handling
+│   ├── Serverless functions
+│   └── CDN distribution
+│
+├── AWS S3 + CloudFront
+│   ├── Static hosting
+│   ├── Global CDN
+│   ├── High availability
+│   └── Custom domain support
+│
+└── Self-hosted (Docker/VPS)
+    ├── nginx web server
+    ├── SSL/TLS certificates
+    ├── Process management (PM2)
+    └── Monitoring & logging
+
+================================================================================
+                      TECHNOLOGY STACK DETAILS
+================================================================================
+
+FRONTEND TECHNOLOGIES:
+├── Core Framework: React 19.0.0
+│   ├── Component-based architecture
+│   ├── Virtual DOM for performance
+│   ├── Hooks for state management
+│   └── JSX syntax
+
+├── Language: TypeScript 5.7+
+│   ├── Static type checking
+│   ├── Enhanced IDE support
+│   ├── Better code maintainability
+│   └── Compile-time error detection
+
+├── Build Tool: Vite 6.0.3
+│   ├── Lightning-fast HMR
+│   ├── Optimized production builds
+│   ├── Plugin ecosystem
+│   └── Native ES modules
+
+├── Styling: Tailwind CSS 4.1.4
+│   ├── Utility-first CSS framework
+│   ├── Responsive design utilities
+│   ├── Dark mode support
+│   └── Custom color schemes
+
+├── UI Components: Radix UI + Shadcn
+│   ├── Accessible components
+│   ├── Unstyled primitives
+│   ├── Customizable with Tailwind
+│   └── WAI-ARIA compliant
+
+├── Animations: Framer Motion 12.9.2
+│   ├── Smooth transitions
+│   ├── Gesture animations
+│   ├── SVG path animations
+│   └── Layout animations
+
+└── 3D Graphics: Three.js 0.182.0
+    ├── WebGL rendering
+    ├── Shader effects
+    ├── 3D transformations
+    └── Real-time rendering
+
+BACKEND TECHNOLOGIES:
+├── BaaS: Supabase
+│   ├── PostgreSQL 15+ database
+│   ├── RESTful API (PostgREST)
+│   ├── Real-time subscriptions
+│   ├── Authentication service
+│   ├── Storage buckets
+│   └── Edge functions
+
+├── Authentication:
+│   ├── Email/Password (built-in)
+│   ├── Google OAuth 2.0
+│   ├── JWT token management
+│   └── Session handling
+
+└── Email Service:
+    ├── Resend API
+    ├── SMTP protocol
+    ├── HTML templates
+    └── Delivery tracking
+
+THIRD-PARTY INTEGRATIONS:
+├── Google Cloud Platform
+│   ├── OAuth 2.0 Client
+│   ├── People API
+│   └── Sign-In SDK
+
+├── Email Providers (Options)
+│   ├── Resend
+│   ├── Brevo (Sendinblue)
+│   ├── SendGrid
+│   └── Gmail SMTP
+
+└── Development Tools
+    ├── ESLint (Code linting)
+    ├── Prettier (Code formatting)
+    ├── Git (Version control)
+    └── npm/pnpm (Package management)
+
+================================================================================
+                      PROJECT FILE STRUCTURE
+================================================================================
+
+repo (1)/
+│
+├── src/
+│   ├── components/
+│   │   ├── dashboard/
+│   │   │   ├── HistoryView.tsx        - Scan history table
+│   │   │   ├── MetricCard.tsx         - Metric display card
+│   │   │   ├── QuickStats.tsx         - Statistics overview
+│   │   │   ├── ResultsPanel.tsx       - Scan results display
+│   │   │   ├── ScanPanel.tsx          - URL scanning interface
+│   │   │   ├── ScanningLoader.tsx     - Loading animation
+│   │   │   └── ThreatFeed.tsx         - Real-time threat feed
+│   │   │
+│   │   ├── layout/
+│   │   │   ├── Header.tsx             - Top navigation bar
+│   │   │   └── Sidebar.tsx            - Side navigation menu
+│   │   │
+│   │   ├── ui/ (Shadcn Components)
+│   │   │   ├── background-paths.tsx   - Animated SVG background
+│   │   │   ├── login-1.tsx            - Login/Signup component
+│   │   │   ├── button.tsx             - Button component
+│   │   │   ├── input.tsx              - Input field component
+│   │   │   ├── dialog.tsx             - Modal dialog
+│   │   │   ├── card.tsx               - Card container
+│   │   │   ├── tabs.tsx               - Tab navigation
+│   │   │   ├── table.tsx              - Data table
+│   │   │   ├── badge.tsx              - Badge/chip component
+│   │   │   ├── progress.tsx           - Progress bar
+│   │   │   ├── avatar.tsx             - User avatar
+│   │   │   ├── dropdown-menu.tsx      - Dropdown menu
+│   │   │   └── [50+ more components]  - Complete UI library
+│   │   │
+│   │   ├── Dashboard.tsx              - Main dashboard component
+│   │   ├── LoginModal.tsx             - Login modal wrapper
+│   │   └── WebGLBackground.tsx        - 3D background shader
+│   │
+│   ├── hooks/
+│   │   ├── use-mobile.ts              - Mobile detection hook
+│   │   ├── use-media-query.tsx        - Responsive breakpoint hook
+│   │   └── useScanHistory.ts          - Scan history state hook
+│   │
+│   ├── lib/
+│   │   ├── supabase.ts                - Supabase client config
+│   │   └── utils.ts                   - Utility functions (cn, etc.)
+│   │
+│   ├── types/
+│   │   ├── global.d.ts                - Global type definitions
+│   │   ├── modules.d.ts               - Module declarations
+│   │   ├── next.d.ts                  - Next.js types (compatibility)
+│   │   └── styled-jsx.d.ts            - Styled-jsx types
+│   │
+│   ├── utils/
+│   │   └── mockApi.ts                 - Mock API for development
+│   │
+│   ├── App.tsx                        - Root application component
+│   ├── main.tsx                       - Application entry point
+│   ├── index.css                      - Global styles & Tailwind
+│   ├── next-themes.tsx                - Theme provider
+│   └── vite-env.d.ts                  - Vite environment types
+│
+├── public/                            - Static assets
+│
+├── .env.local                         - Environment variables
+├── components.json                    - Shadcn configuration
+├── index.html                         - HTML entry point
+├── package.json                       - Dependencies & scripts
+├── package-lock.json                  - Dependency lock file
+├── pnpm-lock.yaml                     - pnpm lock file
+├── tsconfig.json                      - TypeScript configuration
+├── tsconfig.node.json                 - Node TypeScript config
+├── vite.config.ts                     - Vite build configuration
+├── vite.config.d.ts                   - Vite config types
+├── requirements.txt                   - Project dependencies list
+├── PROJECT_OVERVIEW.txt               - This file
+└── README.md                          - Project readme
+
+================================================================================
+                      CONFIGURATION FILES
+================================================================================
+
+.env.local (Environment Variables):
+─────────────────────────────────────
+VITE_SUPABASE_URL=https://gqgpstngasadzlkdyqqq.supabase.co
+VITE_SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+
+vite.config.ts (Build Configuration):
+──────────────────────────────────────
+- React plugin with SWC/Babel
+- Tailwind CSS integration
+- Path aliases (@/ → ./src)
+- Single-file build option
+- Production optimizations
+
+tsconfig.json (TypeScript Configuration):
+──────────────────────────────────────────
+- Target: ES2020
+- Module: ESNext
+- JSX: react-jsx
+- Strict mode enabled
+- Path mapping for @/
+
+components.json (Shadcn Configuration):
+────────────────────────────────────────
+- Style: default
+- Base color: slate
+- CSS variables: true
+- Tailwind config path
+- Aliases for components
+
+================================================================================
+                      INSTALLATION & SETUP
+================================================================================
+
+PREREQUISITES:
+├── Node.js 18+ or 20+
+├── npm, pnpm, or yarn package manager
+├── Git (for version control)
+├── Modern web browser (Chrome, Firefox, Safari, Edge)
+└── Text editor (VS Code recommended)
+
+STEP-BY-STEP INSTALLATION:
+
+1. Clone or Extract Project
+   ─────────────────────────
+   cd "c:\Users\Vasu\Downloads\repo\landing page\repo (1)"
+
+2. Install Dependencies
+   ────────────────────
+   npm install
+   # or
+   pnpm install
+   # or
+   yarn install
+
+3. Configure Environment Variables
+   ────────────────────────────────
+   Create .env.local file with:
+   VITE_SUPABASE_URL=your_supabase_url
+   VITE_SUPABASE_ANON_KEY=your_supabase_anon_key
+
+4. Setup Supabase Project
+   ──────────────────────
+   a) Create account at https://supabase.com
+   b) Create new project
+   c) Enable Email provider in Authentication
+   d) Enable Google OAuth provider
+   e) Configure SMTP for email delivery
+   f) Add redirect URLs:
+      - http://localhost:5176
+      - http://localhost:5176/auth/callback
+
+5. Setup Google OAuth (Optional)
+   ─────────────────────────────
+   a) Go to https://console.cloud.google.com
+   b) Create OAuth 2.0 Client ID
+   c) Add authorized origins: http://localhost:5176
+   d) Add redirect URIs (from Supabase)
+   e) Copy Client ID & Secret to Supabase
+
+6. Configure Email Service (Choose One)
+   ────────────────────────────────────
+   Option A: Use Supabase Default (No setup needed)
+   Option B: Resend
+     - Sign up at https://resend.com
+     - Get API key
+     - Configure in Supabase SMTP settings
+   Option C: Brevo/SendGrid/Gmail
+     - Follow provider setup
+     - Add SMTP credentials to Supabase
+
+7. Run Development Server
+   ───────────────────────
+   npm run dev
+   # Server starts at http://localhost:5176
+
+8. Build for Production
+   ────────────────────
+   npm run build
+   # Output in /dist folder
+
+9. Preview Production Build
+   ────────────────────────
+   npm run preview
+   # Preview at http://localhost:8080
+
+================================================================================
+                      TROUBLESHOOTING GUIDE
+================================================================================
+
+COMMON ISSUES & SOLUTIONS:
+
+1. "Error sending confirmation email"
+   Solution: Configure SMTP properly in Supabase or disable email confirmation
+   
+2. "Google OAuth not working"
+   Solution: Check Client ID, Redirect URIs, and provider enabled in Supabase
+   
+3. "Port 5176 already in use"
+   Solution: Kill process or Vite will auto-use next available port
+   
+4. "Supabase connection failed"
+   Solution: Verify .env.local file has correct URL and ANON key
+   
+5. "Dependencies installation error"
+   Solution: Delete node_modules and package-lock.json, reinstall
+   
+6. "TypeScript errors"
+   Solution: Run `npm run tsc` to see detailed errors
+   
+7. "Build fails"
+   Solution: Check for syntax errors, missing imports, type issues
+
+================================================================================
+                      FUTURE ENHANCEMENTS
+================================================================================
+
+PLANNED FEATURES:
+✓ Multi-factor Authentication (2FA)
+✓ Password strength meter
+✓ Account recovery flow
+✓ User profile editing
+✓ Admin dashboard
+✓ Real vulnerability scanning (integration with security APIs)
+✓ Detailed threat analytics
+✓ Export reports (PDF/CSV)
+✓ Email notifications for threats
+✓ Dark/Light theme toggle
+✓ Multiple language support (i18n)
+✓ Mobile app (React Native)
+✓ API integration documentation
+✓ Webhook support
+✓ SSO (Single Sign-On)
+
+SCALABILITY IMPROVEMENTS:
+✓ Database query optimization
+✓ Caching strategy (Redis)
+✓ CDN for static assets
+✓ Load balancing
+✓ Horizontal scaling
+✓ Microservices architecture
+✓ Real-time WebSocket connections
+
+================================================================================
+                      SUPPORT & CONTACT
+================================================================================
+
+PROJECT INFORMATION:
+Name: Bharat Authentication
+Version: 1.0.0
+License: [To be specified]
+Repository: [GitHub URL if available]
+
+TECHNICAL SUPPORT:
+Email: [Support email]
+Documentation: This file + requirements.txt
+Issue Tracker: [GitHub Issues or support system]
+
+DEVELOPER CONTACT:
+Project Owner: [Your name/organization]
+Email: hiho1732@gmail.com (based on SMTP sender)
+Development Team: [Team information]
+
+================================================================================
+                      END OF DOCUMENTATION
+================================================================================
+
+Last Updated: December 29, 2025
+Document Version: 1.0
+Maintained By: Project Development Team
+
+For the latest updates and detailed technical documentation, please refer to
+the project repository and inline code comments.
