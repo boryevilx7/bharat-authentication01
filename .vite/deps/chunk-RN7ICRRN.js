@@ -1,6 +1,6 @@
 import {
   require_react
-} from "./chunk-PAMVEWRW.js";
+} from "./chunk-32E4H3EV.js";
 import {
   __toESM
 } from "./chunk-G3PMV62Z.js";
@@ -13,4 +13,4 @@ var useLayoutEffect2 = (globalThis == null ? void 0 : globalThis.document) ? Rea
 export {
   useLayoutEffect2
 };
-//# sourceMappingURL=chunk-6W2FMANH.js.map
+//# sourceMappingURL=chunk-RN7ICRRN.js.map
