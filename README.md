@@ -51,9 +51,7 @@ npm run dev
 - `VITE_SUPABASE_URL` - Your Supabase project URL
 - `VITE_SUPABASE_ANON_KEY` - Your Supabase anon key
 
-## Deployment
 
-This application can be deployed to platforms like Vercel, Netlify, or GitHub Pages. For the best experience with Supabase, we recommend deploying to Vercel.
 
 ## Contributing
 
