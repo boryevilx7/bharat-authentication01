@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "vite",
     "install-and-dev": "pnpm install && pnpm dev",
-    "build": "vite build --mode development",
+    "build": "vite build",
     "build:watch": "vite build --watch --mode development",
     "preview": "vite preview --port 8080",
     "tsc": "tsc",

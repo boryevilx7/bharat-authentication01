@@ -3,7 +3,7 @@ import tailwindcss from "@tailwindcss/vite";
 import react from "@vitejs/plugin-react";
 import path from "path";
 import { defineConfig } from "vite";
-import { viteSingleFile } from "vite-plugin-singlefile";
+// import { viteSingleFile } from "vite-plugin-singlefile";
 // import checker from "vite-plugin-checker";
 
 // https://vitejs.dev/config/
@@ -23,7 +23,7 @@ export default defineConfig({
     //     tsconfigPath: path.resolve(__dirname, "./tsconfig.json"),
     //   },
     // }),
-    viteSingleFile(),
+    // viteSingleFile(),
   ],
   // server: {
   //   hmr: {
