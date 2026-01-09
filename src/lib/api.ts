@@ -1,6 +1,31 @@
 // Real API for threat analysis
 import { ScanResult, ThreatFeedItem, DashboardMetrics } from '../utils/mockApi';
 
+export interface ThreatAnalysisResponse {
+  id: string;
+  timestamp: string;
+  url?: string;
+  fileName?: string;
+  threatLevel: 'low' | 'medium' | 'high' | 'critical';
+  riskScore: number;
+  threatsDetected: {
+    type: string;
+    severity: 'low' | 'medium' | 'high' | 'critical';
+    description: string;
+    confidence: number;
+  }[];
+  recommendations: string[];
+  scanDuration: number;
+  status: 'completed' | 'failed';
+}
+
+export interface StatsData {
+  totalScans: number;
+  threatsFound: number;
+  avgRiskScore: number;
+  criticalAlerts: number;
+}
+
 export interface ThreatAnalysisApi {
   getDashboardMetrics(): Promise<DashboardMetrics>;
   scanUrl(url: string): Promise<ScanResult>;

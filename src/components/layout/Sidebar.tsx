@@ -1,5 +1,5 @@
 import { cn } from '@/lib/utils';
-import { LayoutDashboard, Search, History, Bell, Settings, Shield, LogOut } from 'lucide-react';
+import { LayoutDashboard, Search, History, Bell, Settings, BarChart3, Shield, LogOut } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
 interface SidebarProps {
@@ -13,6 +13,7 @@ const navigation = [
   { name: 'Dashboard', id: 'dashboard', icon: LayoutDashboard },
   { name: 'Scan', id: 'scan', icon: Search },
   { name: 'History', id: 'history', icon: History },
+  { name: 'Analytics', id: 'analytics', icon: BarChart3 },
   { name: 'Alerts', id: 'alerts', icon: Bell },
   { name: 'Settings', id: 'settings', icon: Settings },
 ];

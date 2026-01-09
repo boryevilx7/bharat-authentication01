@@ -8,15 +8,18 @@ import { ResultsPanel } from './dashboard/ResultsPanel';
 import { HistoryView } from './dashboard/HistoryView';
 import { ScanningLoader } from './dashboard/ScanningLoader';
 import { QuickStats } from './dashboard/QuickStats';
-import { threatAnalysisApi } from '@/api/threatAnalysisApi';
+import { threatAnalysisApi } from '@/lib/api';
 import { ScanResult, DashboardMetrics } from '@/utils/mockApi';
 import { useScanHistory } from '@/hooks/useScanHistory';
 import { Toaster, toast } from 'sonner';
 import { Shield, Activity, AlertTriangle, Clock } from 'lucide-react';
+import { AIAnalysisPanel } from './dashboard/AIAnalysisPanel';
+import { DynamicAnalytics } from './dashboard/DynamicAnalytics';
+import { AIInferenceService, AIInferenceResult } from '../services/aiInferenceService';
 
 interface DashboardProps {
-  userEmail: string
-  onLogout: () => void
+  userEmail: string;
+  onLogout: () => void;
 }
 
 export function Dashboard({ userEmail, onLogout }: DashboardProps) {
@@ -28,7 +31,9 @@ export function Dashboard({ userEmail, onLogout }: DashboardProps) {
     avgResponseTime: '0s' 
   });
   const [currentResult, setCurrentResult] = useState<ScanResult | null>(null);
+  const [aiAnalysisResult, setAiAnalysisResult] = useState<AIInferenceResult | null>(null);
   const [isScanning, setIsScanning] = useState(false);
+  const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [loading, setLoading] = useState(true);
   const { history, addScan, removeScan } = useScanHistory();
   const resultsRef = useRef<HTMLDivElement>(null);
@@ -78,6 +83,26 @@ export function Dashboard({ userEmail, onLogout }: DashboardProps) {
     setIsScanning(false);
     setCurrentResult(result);
     addScan(result);
+    
+    // Perform AI analysis
+    setIsAnalyzing(true);
+    try {
+      const aiService = AIInferenceService.getInstance();
+      if (result.type === 'url') {
+        const aiResult = await aiService.analyzeUrl(result.target);
+        setAiAnalysisResult(aiResult);
+      } else {
+        // For file results, we'd need to access the actual File object
+        // For now, we'll simulate with a dummy file
+        const dummyFile = new File([], result.target);
+        const aiResult = await aiService.analyzeFile(dummyFile);
+        setAiAnalysisResult(aiResult);
+      }
+    } catch (error) {
+      console.error('Error performing AI analysis:', error);
+    } finally {
+      setIsAnalyzing(false);
+    }
     
     // Update metrics when scan completes
     try {
@@ -162,6 +187,11 @@ export function Dashboard({ userEmail, onLogout }: DashboardProps) {
               {/* Results */}
               <div ref={resultsRef} className="grid gap-6">
                 {isScanning ? <ScanningLoader /> : <ResultsPanel result={currentResult} />}
+                
+                {/* AI Analysis Panel */}
+                {aiAnalysisResult && !isScanning && (
+                  <AIAnalysisPanel result={aiAnalysisResult} />
+                )}
               </div>
             </div>
           )}
@@ -206,6 +236,13 @@ export function Dashboard({ userEmail, onLogout }: DashboardProps) {
                   <ResultsPanel result={currentResult} />
                 </div>
               </div>
+            </div>
+          )}
+
+          {activeTab === 'analytics' && (
+            <div className="space-y-6">
+              <h2 className="text-2xl font-bold">Analytics Dashboard</h2>
+              <DynamicAnalytics />
             </div>
           )}
 
