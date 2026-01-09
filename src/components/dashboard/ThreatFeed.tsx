@@ -2,7 +2,8 @@ import { useEffect, useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Badge } from '@/components/ui/badge';
-import { mockApi, ThreatFeedItem, ScanResult } from '@/utils/mockApi';
+import { threatAnalysisApi } from '@/api/threatAnalysisApi';
+import { ThreatFeedItem, ScanResult } from '@/utils/mockApi';
 import { AlertTriangle, Shield, Activity, ChevronRight } from 'lucide-react';
 
 interface ThreatFeedProps {
@@ -11,17 +12,106 @@ interface ThreatFeedProps {
 
 export function ThreatFeed({ onThreatClick }: ThreatFeedProps) {
   const [threats, setThreats] = useState<ThreatFeedItem[]>([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Initialize with some threats
-    const initialThreats = Array.from({ length: 5 }, () => mockApi.generateThreatFeedItem());
-    setThreats(initialThreats);
+    const loadThreatFeed = async () => {
+      try {
+        setLoading(true);
+        const initialThreats = await threatAnalysisApi.getThreatFeed();
+        setThreats(initialThreats);
+      } catch (error) {
+        console.error('Error loading threat feed:', error);
+        // Fallback to mock data
+        const initialThreats: ThreatFeedItem[] = Array.from({ length: 5 }, () => {
+          // Generate mock threat feed item
+          const types: ThreatFeedItem['type'][] = ['detection', 'scan', 'alert'];
+          const severities: ThreatFeedItem['severity'][] = ['low', 'medium', 'high', 'critical'];
+          
+          const urls = [
+            'https://paypa1-secure.com',
+            'https://amazn-account.net',
+            'https://microsft-login.com',
+            'https://googl-verify.info',
+            'https://app1e-id.com'
+          ];
 
-    // Add new threats periodically
-    const interval = setInterval(() => {
-      const newThreat = mockApi.generateThreatFeedItem();
-      setThreats((prev) => [newThreat, ...prev].slice(0, 20));
-    }, 5000);
+          const fileNames = [
+            'invoice_2024.apk',
+            'banking_app.exe',
+            'payment_receipt.pdf.exe',
+            'tax_document.scr',
+            'update_installer.apk'
+          ];
+          
+          const messages = [
+            'Phishing attempt detected from suspicious domain',
+            'Malware signature found in uploaded file',
+            'URL scan completed - no threats detected',
+            'High similarity to known fraudulent site detected',
+            'Suspicious redirect chain identified',
+            'Data harvesting script detected in webpage',
+            'Typosquatting domain flagged for review'
+          ];
+
+          const severity = severities[Math.floor(Math.random() * severities.length)];
+          const type = types[Math.floor(Math.random() * types.length)];
+          const isUrl = Math.random() > 0.5;
+
+          const threatScore = {
+            overall: severity === 'critical' ? 80 + Math.random() * 20 : 
+                     severity === 'high' ? 60 + Math.random() * 20 :
+                     severity === 'medium' ? 30 + Math.random() * 30 :
+                     Math.random() * 30,
+            phishing: Math.random() * 100,
+            malware: Math.random() * 100,
+            fraudulent: Math.random() * 100
+          };
+
+          return {
+            id: `threat-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+            type,
+            message: messages[Math.floor(Math.random() * messages.length)],
+            severity,
+            timestamp: new Date(),
+            scanResult: {
+              id: `scan-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+              type: isUrl ? 'url' : 'file',
+              target: isUrl ? urls[Math.floor(Math.random() * urls.length)] : fileNames[Math.floor(Math.random() * fileNames.length)],
+              timestamp: new Date(),
+              threatScore,
+              status: 'completed',
+              computerVision: {
+                similarity: Math.random() * 100,
+                matchedBrands: ['PayPal', 'Amazon', 'Microsoft'].slice(0, Math.floor(Math.random() * 3) + 1),
+                suspiciousElements: ['fake login form', 'typosquatting', 'suspicious redirect'].slice(0, Math.floor(Math.random() * 3) + 1)
+              },
+              nlpAnalysis: {
+                sentiment: Math.random() > 0.5 ? 'negative' : 'suspicious',
+                keywords: ['urgent', 'verify', 'account', 'password'].slice(0, Math.floor(Math.random() * 4) + 2),
+                redFlags: ['urgency language', 'spelling errors', 'suspicious links'].slice(0, Math.floor(Math.random() * 3) + 1)
+              },
+              mlConfidence: Math.random() * 100
+            }
+          };
+        });
+        setThreats(initialThreats);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadThreatFeed();
+
+    // Refresh threat feed periodically
+    const interval = setInterval(async () => {
+      try {
+        const newThreats = await threatAnalysisApi.getThreatFeed();
+        setThreats(prev => [...newThreats, ...prev].slice(0, 20)); // Keep only latest 20
+      } catch (error) {
+        console.error('Error refreshing threat feed:', error);
+      }
+    }, 10000); // Refresh every 10 seconds
 
     return () => clearInterval(interval);
   }, []);
@@ -49,6 +139,22 @@ export function ThreatFeed({ onThreatClick }: ThreatFeedProps) {
         return <Activity className="h-4 w-4" />;
     }
   };
+
+  if (loading && threats.length === 0) {
+    return (
+      <Card className="col-span-1">
+        <CardHeader>
+          <CardTitle>Live Threat Feed</CardTitle>
+          <CardDescription>Real-time security events and detections</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="h-[400px] flex items-center justify-center">
+            <p>Loading threat feed...</p>
+          </div>
+        </CardContent>
+      </Card>
+    );
+  }
 
   return (
     <Card className="col-span-1">

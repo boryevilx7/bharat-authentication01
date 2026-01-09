@@ -5,7 +5,8 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { Loader2, Search, Upload, FileUp } from 'lucide-react';
-import { mockApi, ScanResult } from '@/utils/mockApi';
+import { threatAnalysisApi } from '@/api/threatAnalysisApi';
+import { ScanResult } from '@/utils/mockApi';
 import { toast } from 'sonner';
 import { cn } from '@/lib/utils';
 
@@ -31,12 +32,13 @@ export function ScanPanel({ onScanComplete, onScanStart }: ScanPanelProps) {
     toast.info('Starting URL scan...');
 
     try {
-      const result = await mockApi.scanUrl(urlValue);
+      const result = await threatAnalysisApi.scanUrl(urlValue);
       onScanComplete(result);
       toast.success('Scan completed successfully');
       setUrlValue('');
     } catch (error) {
       toast.error('Scan failed. Please try again.');
+      console.error('Error scanning URL:', error);
     } finally {
       setIsScanning(false);
     }
@@ -53,12 +55,13 @@ export function ScanPanel({ onScanComplete, onScanStart }: ScanPanelProps) {
     toast.info('Starting file scan...');
 
     try {
-      const result = await mockApi.scanFile(selectedFile);
+      const result = await threatAnalysisApi.scanFile(selectedFile);
       onScanComplete(result);
       toast.success('Scan completed successfully');
       setSelectedFile(null);
     } catch (error) {
       toast.error('Scan failed. Please try again.');
+      console.error('Error scanning file:', error);
     } finally {
       setIsScanning(false);
     }

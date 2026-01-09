@@ -8,7 +8,8 @@ import { ResultsPanel } from './dashboard/ResultsPanel';
 import { HistoryView } from './dashboard/HistoryView';
 import { ScanningLoader } from './dashboard/ScanningLoader';
 import { QuickStats } from './dashboard/QuickStats';
-import { mockApi, ScanResult } from '@/utils/mockApi';
+import { threatAnalysisApi } from '@/api/threatAnalysisApi';
+import { ScanResult, DashboardMetrics } from '@/utils/mockApi';
 import { useScanHistory } from '@/hooks/useScanHistory';
 import { Toaster, toast } from 'sonner';
 import { Shield, Activity, AlertTriangle, Clock } from 'lucide-react';
@@ -20,17 +21,50 @@ interface DashboardProps {
 
 export function Dashboard({ userEmail, onLogout }: DashboardProps) {
   const [activeTab, setActiveTab] = useState('dashboard');
-  const [metrics, setMetrics] = useState(mockApi.getDashboardMetrics());
+  const [metrics, setMetrics] = useState<DashboardMetrics>({ 
+    threatsDetected: 0, 
+    scansToday: 0, 
+    falsePositiveRate: 0, 
+    avgResponseTime: '0s' 
+  });
   const [currentResult, setCurrentResult] = useState<ScanResult | null>(null);
   const [isScanning, setIsScanning] = useState(false);
+  const [loading, setLoading] = useState(true);
   const { history, addScan, removeScan } = useScanHistory();
   const resultsRef = useRef<HTMLDivElement>(null);
 
-  // Update metrics periodically
+  // Load initial metrics
   useEffect(() => {
-    const interval = setInterval(() => {
-      setMetrics(mockApi.getDashboardMetrics());
-    }, 10000);
+    const loadInitialData = async () => {
+      try {
+        setLoading(true);
+        const initialMetrics = await threatAnalysisApi.getDashboardMetrics();
+        setMetrics(initialMetrics);
+      } catch (error) {
+        console.error('Error loading initial data:', error);
+        // Fallback to mock data
+        setMetrics({
+          threatsDetected: Math.floor(Math.random() * 1000) + 500,
+          scansToday: Math.floor(Math.random() * 500) + 100,
+          falsePositiveRate: parseFloat((Math.random() * 5).toFixed(2)),
+          avgResponseTime: `${(Math.random() * 2 + 0.5).toFixed(1)}s`
+        });
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadInitialData();
+
+    // Update metrics periodically
+    const interval = setInterval(async () => {
+      try {
+        const newMetrics = await threatAnalysisApi.getDashboardMetrics();
+        setMetrics(newMetrics);
+      } catch (error) {
+        console.error('Error updating metrics:', error);
+      }
+    }, 30000); // Update every 30 seconds
 
     return () => clearInterval(interval);
   }, []);
@@ -40,16 +74,18 @@ export function Dashboard({ userEmail, onLogout }: DashboardProps) {
     setCurrentResult(null);
   };
 
-  const handleScanComplete = (result: ScanResult) => {
+  const handleScanComplete = async (result: ScanResult) => {
     setIsScanning(false);
     setCurrentResult(result);
     addScan(result);
+    
     // Update metrics when scan completes
-    setMetrics((prev) => ({
-      ...prev,
-      scansToday: prev.scansToday + 1,
-      threatsDetected: prev.threatsDetected + (result.threatScore.overall > 50 ? 1 : 0),
-    }));
+    try {
+      const newMetrics = await threatAnalysisApi.getDashboardMetrics();
+      setMetrics(newMetrics);
+    } catch (error) {
+      console.error('Error updating metrics after scan:', error);
+    }
   };
 
   const handleThreatClick = (result: ScanResult) => {
