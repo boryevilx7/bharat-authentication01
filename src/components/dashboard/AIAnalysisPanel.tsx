@@ -32,12 +32,7 @@ export const AIAnalysisPanel = ({ result }: AIAnalysisPanelProps) => {
     value: 1,
     confidence: result.threatTaxonomy.confidence
   }));
-  
-  const riskVectorData = [
-    { name: 'Confidentiality', value: result.riskScore.vector.confidentiality },
-    { name: 'Integrity', value: result.riskScore.vector.integrity },
-    { name: 'Availability', value: result.riskScore.vector.availability },
-  ];
+
   
   const severityData = [
     { name: result.threatTaxonomy.severity, value: result.threatTaxonomy.confidence, color: getSeverityColor(result.threatTaxonomy.severity) },
@@ -85,20 +80,7 @@ export const AIAnalysisPanel = ({ result }: AIAnalysisPanelProps) => {
                 <Progress value={result.riskScore.overallScore} className="w-full" />
               </div>
               
-              <div className="grid grid-cols-3 gap-2">
-                <div className="text-center p-2 bg-muted rounded">
-                  <p className="text-xs text-muted-foreground">C</p>
-                  <p className="text-sm font-medium">{result.riskScore.vector.confidentiality}/10</p>
-                </div>
-                <div className="text-center p-2 bg-muted rounded">
-                  <p className="text-xs text-muted-foreground">I</p>
-                  <p className="text-sm font-medium">{result.riskScore.vector.integrity}/10</p>
-                </div>
-                <div className="text-center p-2 bg-muted rounded">
-                  <p className="text-xs text-muted-foreground">A</p>
-                  <p className="text-sm font-medium">{result.riskScore.vector.availability}/10</p>
-                </div>
-              </div>
+
               
               <div className="pt-2">
                 <p className="text-xs text-muted-foreground">CVSS Score: {result.riskScore.cvssScore}</p>
@@ -123,57 +105,32 @@ export const AIAnalysisPanel = ({ result }: AIAnalysisPanelProps) => {
           </div>
         </div>
 
-        {/* Charts Section */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
-          <div className="lg:col-span-2">
-            <h3 className="font-semibold mb-3 flex items-center gap-2">
-              <BarChart3 className="h-4 w-4" />
-              Risk Vector Analysis
-            </h3>
-            <div className="h-64">
-              <ResponsiveContainer width="100%" height="100%">
-                <BarChart data={riskVectorData}>
-                  <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis dataKey="name" />
-                  <YAxis domain={[0, 10]} />
-                  <Tooltip />
-                  <Bar dataKey="value">
-                    {riskVectorData.map((entry, index) => (
-                      <Cell key={`cell-${index}`} fill="#8884d8" />
-                    ))}
-                  </Bar>
-                </BarChart>
-              </ResponsiveContainer>
-            </div>
-          </div>
-          
-          <div>
-            <h3 className="font-semibold mb-3 flex items-center gap-2">
-              <Zap className="h-4 w-4" />
-              Threat Severity
-            </h3>
-            <div className="h-64 flex items-center justify-center">
-              <ResponsiveContainer width="100%" height="100%">
-                <PieChart>
-                  <Pie
-                    data={severityData}
-                    cx="50%"
-                    cy="50%"
-                    innerRadius={40}
-                    outerRadius={70}
-                    paddingAngle={5}
-                    dataKey="value"
-                    nameKey="name"
-                  >
-                    {severityData.map((entry, index) => (
-                      <Cell key={`cell-${index}`} fill={entry.color} />
-                    ))}
-                  </Pie>
-                  <Tooltip />
-                  <Legend />
-                </PieChart>
-              </ResponsiveContainer>
-            </div>
+        <div>
+          <h3 className="font-semibold mb-3 flex items-center gap-2">
+            <Zap className="h-4 w-4" />
+            Threat Severity
+          </h3>
+          <div className="h-64 flex items-center justify-center">
+            <ResponsiveContainer width="100%" height="100%">
+              <PieChart>
+                <Pie
+                  data={severityData}
+                  cx="50%"
+                  cy="50%"
+                  innerRadius={40}
+                  outerRadius={70}
+                  paddingAngle={5}
+                  dataKey="value"
+                  nameKey="name"
+                >
+                  {severityData.map((entry, index) => (
+                    <Cell key={`cell-${index}`} fill={entry.color} />
+                  ))}
+                </Pie>
+                <Tooltip />
+                <Legend />
+              </PieChart>
+            </ResponsiveContainer>
           </div>
         </div>
 

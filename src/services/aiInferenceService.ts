@@ -10,14 +10,10 @@ export interface ThreatTaxonomy {
 
 export interface RiskScore {
   overallScore: number;
-  vector: {
-    confidentiality: number;
-    integrity: number;
-    availability: number;
-  };
+
   cvssScore: number;
-  attackVector: string;
   attackComplexity: number;
+  attackVector: string;
   privilegesRequired: number;
   userInteraction: number;
 }
@@ -76,11 +72,6 @@ export class AIInferenceService {
     // Calculate risk score based on threat data
     const riskScore: RiskScore = {
       overallScore: threatResult.details.reputationScore,
-      vector: {
-        confidentiality: threatResult.details.phishing ? 8 : 2,
-        integrity: threatResult.details.malware ? 9 : 1,
-        availability: threatResult.details.blacklisted ? 7 : 3,
-      },
       cvssScore: parseFloat((threatResult.confidence / 10).toFixed(1)),
       attackVector: threatResult.details.suspiciousDomain ? 'NETWORK' : 'LOCAL',
       attackComplexity: threatResult.details.suspiciousDomain ? 2 : 6,
@@ -170,11 +161,6 @@ export class AIInferenceService {
     // Calculate risk score based on threat data
     const riskScore: RiskScore = {
       overallScore: threatResult.confidence,
-      vector: {
-        confidentiality: threatResult.details.permissions.includes('android.permission.READ_SMS') ? 9 : 2,
-        integrity: threatResult.details.malware ? 10 : 1,
-        availability: threatResult.details.suspiciousActivities.includes('Background Service') ? 7 : 3,
-      },
       cvssScore: parseFloat((threatResult.confidence / 10).toFixed(1)),
       attackVector: threatResult.details.apkSize ? 'FILE' : 'NETWORK',
       attackComplexity: threatResult.details.signatureIssues ? 3 : 6,
