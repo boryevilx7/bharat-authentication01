@@ -88,7 +88,7 @@ class ThreatAnalysisService implements ThreatAnalysisApi {
     } catch (error) {
       console.error('Error scanning URL:', error);
       // Fallback to real threat detection implementation
-      await new Promise(resolve => setTimeout(resolve, 2000 + Math.random() * 2000));
+      await new Promise(resolve => setTimeout(resolve, 4000)); // Fixed 4 second scan time
       
       // Use real URL threat service
       const urlService = (await import('../services/urlThreatService')).UrlThreatService.getInstance();
@@ -156,7 +156,7 @@ class ThreatAnalysisService implements ThreatAnalysisApi {
     } catch (error) {
       console.error('Error scanning file:', error);
       // Fallback to real threat detection implementation
-      await new Promise(resolve => setTimeout(resolve, 3000 + Math.random() * 3000));
+      await new Promise(resolve => setTimeout(resolve, 4000)); // Fixed 4 second scan time
       
       // Use real APK threat service
       const apkService = (await import('../services/apkThreatService')).ApkThreatService.getInstance();

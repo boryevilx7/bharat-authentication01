@@ -53,6 +53,9 @@ export class AIInferenceService {
   }
 
   async analyzeUrl(url: string): Promise<AIInferenceResult> {
+    // Simulate real-time AI inference with fixed 4 second delay
+    await new Promise(resolve => setTimeout(resolve, 4000));
+    
     // Use real threat detection for AI analysis
     const urlService = (await import('./urlThreatService')).UrlThreatService.getInstance();
     const threatResult = await urlService.scanUrl(url);
@@ -132,6 +135,9 @@ export class AIInferenceService {
   }
 
   async analyzeFile(file: File): Promise<AIInferenceResult> {
+    // Simulate real-time AI inference with fixed 4 second delay
+    await new Promise(resolve => setTimeout(resolve, 4000));
+    
     // Use real threat detection for AI analysis
     const apkService = (await import('./apkThreatService')).ApkThreatService.getInstance();
     const threatResult = await apkService.scanApk(file);

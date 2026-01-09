@@ -22,7 +22,7 @@ export function ScanningLoader() {
         }
         return prev;
       });
-    }, 800);
+    }, 800); // 5 stages * 800ms = 4 seconds total
 
     return () => clearInterval(interval);
   }, []);
