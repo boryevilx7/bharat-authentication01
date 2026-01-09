@@ -125,6 +125,27 @@ export function Dashboard({ userEmail, onLogout }: DashboardProps) {
     }, 100);
   };
 
+  const handleThreatAnalyze = async (result: ScanResult) => {
+    // Perform AI analysis when clicking on a threat feed item
+    setIsAnalyzing(true);
+    try {
+      const aiService = AIInferenceService.getInstance();
+      if (result.type === 'url') {
+        const aiResult = await aiService.analyzeUrl(result.target);
+        setAiAnalysisResult(aiResult);
+      } else {
+        // For file results, we'll simulate with a file name from the result
+        const dummyFile = new File([], result.target, { type: 'application/vnd.android.package-archive' });
+        const aiResult = await aiService.analyzeFile(dummyFile);
+        setAiAnalysisResult(aiResult);
+      }
+    } catch (error) {
+      console.error('Error performing AI analysis:', error);
+    } finally {
+      setIsAnalyzing(false);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-background">
       <Toaster position="top-right" richColors />
@@ -178,7 +199,7 @@ export function Dashboard({ userEmail, onLogout }: DashboardProps) {
               {/* Main panels */}
               <div className="grid gap-6 lg:grid-cols-3">
                 <ScanPanel onScanComplete={handleScanComplete} onScanStart={handleScanStart} />
-                <ThreatFeed onThreatClick={handleThreatClick} />
+                <ThreatFeed onThreatClick={handleThreatClick} onThreatAnalyze={handleThreatAnalyze} />
               </div>
 
               {/* Quick Stats */}
@@ -260,6 +281,7 @@ export function Dashboard({ userEmail, onLogout }: DashboardProps) {
                     history={history} 
                     onSelectScan={setCurrentResult}
                     onRemoveScan={removeScan}
+                    onAnalyzeScan={handleThreatAnalyze}
                   />
                 </div>
                 <div className="lg:col-span-2">

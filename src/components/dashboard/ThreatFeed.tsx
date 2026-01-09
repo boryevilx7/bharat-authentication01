@@ -8,6 +8,7 @@ import { AlertTriangle, Shield, Activity, ChevronRight } from 'lucide-react';
 
 interface ThreatFeedProps {
   onThreatClick?: (scanResult: ScanResult) => void;
+  onThreatAnalyze?: (scanResult: ScanResult) => void;
 }
 
 export function ThreatFeed({ onThreatClick }: ThreatFeedProps) {
@@ -168,7 +169,12 @@ export function ThreatFeed({ onThreatClick }: ThreatFeedProps) {
             {threats.map((threat) => (
               <button
                 key={threat.id}
-                onClick={() => threat.scanResult && onThreatClick?.(threat.scanResult)}
+                onClick={() => {
+                  if (threat.scanResult) {
+                    onThreatClick?.(threat.scanResult);
+                    onThreatAnalyze?.(threat.scanResult);
+                  }
+                }}
                 className="w-full flex items-start space-x-3 p-3 rounded-lg border bg-card hover:bg-accent/50 transition-colors cursor-pointer text-left group"
               >
                 <div className="mt-0.5">{getTypeIcon(threat.type)}</div>

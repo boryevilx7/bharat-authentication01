@@ -4,6 +4,7 @@ import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
 import { AlertTriangle, Shield, BarChart3, Brain, Zap } from 'lucide-react';
 import { AIInferenceResult } from '../../services/aiInferenceService';
+import { Bar, BarChart, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell, Pie, PieChart, Legend } from 'recharts';
 
 interface AIAnalysisPanelProps {
   result: AIInferenceResult;
@@ -25,6 +26,24 @@ export const AIAnalysisPanel = ({ result }: AIAnalysisPanelProps) => {
     }
   };
 
+  // Prepare data for charts
+  const threatIndicatorsData = result.threatTaxonomy.indicators.map((indicator, index) => ({
+    name: indicator.substring(0, 20) + (indicator.length > 20 ? '...' : ''),
+    value: 1,
+    confidence: result.threatTaxonomy.confidence
+  }));
+  
+  const riskVectorData = [
+    { name: 'Confidentiality', value: result.riskScore.vector.confidentiality },
+    { name: 'Integrity', value: result.riskScore.vector.integrity },
+    { name: 'Availability', value: result.riskScore.vector.availability },
+  ];
+  
+  const severityData = [
+    { name: result.threatTaxonomy.severity, value: result.threatTaxonomy.confidence, color: getSeverityColor(result.threatTaxonomy.severity) },
+    { name: 'Remaining', value: 100 - result.threatTaxonomy.confidence, color: '#e5e7eb' },
+  ];
+  
   return (
     <Card className="overflow-hidden">
       <CardHeader className="bg-gradient-to-r from-indigo-500 to-purple-600 text-white">
@@ -101,6 +120,60 @@ export const AIAnalysisPanel = ({ result }: AIAnalysisPanelProps) => {
                 </li>
               ))}
             </ul>
+          </div>
+        </div>
+
+        {/* Charts Section */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
+          <div className="lg:col-span-2">
+            <h3 className="font-semibold mb-3 flex items-center gap-2">
+              <BarChart3 className="h-4 w-4" />
+              Risk Vector Analysis
+            </h3>
+            <div className="h-64">
+              <ResponsiveContainer width="100%" height="100%">
+                <BarChart data={riskVectorData}>
+                  <CartesianGrid strokeDasharray="3 3" />
+                  <XAxis dataKey="name" />
+                  <YAxis domain={[0, 10]} />
+                  <Tooltip />
+                  <Bar dataKey="value">
+                    {riskVectorData.map((entry, index) => (
+                      <Cell key={`cell-${index}`} fill="#8884d8" />
+                    ))}
+                  </Bar>
+                </BarChart>
+              </ResponsiveContainer>
+            </div>
+          </div>
+          
+          <div>
+            <h3 className="font-semibold mb-3 flex items-center gap-2">
+              <Zap className="h-4 w-4" />
+              Threat Severity
+            </h3>
+            <div className="h-64 flex items-center justify-center">
+              <ResponsiveContainer width="100%" height="100%">
+                <PieChart>
+                  <Pie
+                    data={severityData}
+                    cx="50%"
+                    cy="50%"
+                    innerRadius={40}
+                    outerRadius={70}
+                    paddingAngle={5}
+                    dataKey="value"
+                    nameKey="name"
+                  >
+                    {severityData.map((entry, index) => (
+                      <Cell key={`cell-${index}`} fill={entry.color} />
+                    ))}
+                  </Pie>
+                  <Tooltip />
+                  <Legend />
+                </PieChart>
+              </ResponsiveContainer>
+            </div>
           </div>
         </div>
 

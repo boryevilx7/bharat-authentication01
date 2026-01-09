@@ -9,9 +9,10 @@ interface HistoryViewProps {
   history: ScanResult[];
   onSelectScan: (scan: ScanResult) => void;
   onRemoveScan?: (id: string) => void;
+  onAnalyzeScan?: (scan: ScanResult) => void;
 }
 
-export function HistoryView({ history, onSelectScan, onRemoveScan }: HistoryViewProps) {
+export function HistoryView({ history, onSelectScan, onRemoveScan, onAnalyzeScan }: HistoryViewProps) {
   if (history.length === 0) {
     return (
       <Card>
@@ -43,7 +44,12 @@ export function HistoryView({ history, onSelectScan, onRemoveScan }: HistoryView
               <div
                 key={scan.id}
                 className="flex items-start justify-between p-4 rounded-lg border bg-card hover:bg-accent/50 transition-colors cursor-pointer"
-                onClick={() => onSelectScan(scan)}
+                onClick={() => {
+                  onSelectScan(scan);
+                  if (onAnalyzeScan) {
+                    onAnalyzeScan(scan);
+                  }
+                }}
               >
                 <div className="flex-1 space-y-2">
                   <div className="flex items-center space-x-2">
