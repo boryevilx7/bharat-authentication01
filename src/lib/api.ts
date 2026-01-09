@@ -87,14 +87,29 @@ class ThreatAnalysisService implements ThreatAnalysisApi {
       return data;
     } catch (error) {
       console.error('Error scanning URL:', error);
-      // Fallback to mock implementation
+      // Fallback to real threat detection implementation
       await new Promise(resolve => setTimeout(resolve, 2000 + Math.random() * 2000));
       
+      // Use real URL threat service
+      const urlService = (await import('../services/urlThreatService')).UrlThreatService.getInstance();
+      const threatResult = await urlService.scanUrl(url);
+      
+      // Calculate overall threat score based on real detection
+      let overallScore = 0;
+      if (threatResult.isThreat) {
+        switch(threatResult.threatLevel) {
+          case 'critical': overallScore = 90; break;
+          case 'high': overallScore = 70; break;
+          case 'medium': overallScore = 50; break;
+          case 'low': overallScore = 30; break;
+        }
+      }
+      
       const threatScore = {
-        overall: Math.random() * 100,
-        phishing: Math.random() * 100,
-        malware: Math.random() * 100,
-        fraudulent: Math.random() * 100
+        overall: overallScore,
+        phishing: threatResult.details.phishing ? 80 : 10,
+        malware: threatResult.details.malware ? 85 : 5,
+        fraudulent: threatResult.details.suspiciousDomain ? 75 : 15
       };
 
       return {
@@ -105,16 +120,16 @@ class ThreatAnalysisService implements ThreatAnalysisApi {
         threatScore,
         status: 'completed',
         computerVision: {
-          similarity: Math.random() * 100,
-          matchedBrands: ['PayPal', 'Amazon', 'Microsoft'].slice(0, Math.floor(Math.random() * 3) + 1),
-          suspiciousElements: ['fake login form', 'typosquatting', 'suspicious redirect'].slice(0, Math.floor(Math.random() * 3) + 1)
+          similarity: threatResult.details.reputationScore,
+          matchedBrands: threatResult.threatType === 'Brand Impersonation' ? ['PayPal', 'Amazon', 'Microsoft'] : [],
+          suspiciousElements: threatResult.threatType ? [threatResult.threatType] : []
         },
         nlpAnalysis: {
-          sentiment: Math.random() > 0.5 ? 'negative' : 'neutral',
-          keywords: ['urgent', 'verify', 'account', 'password'].slice(0, Math.floor(Math.random() * 4) + 2),
-          redFlags: ['urgency language', 'spelling errors', 'suspicious links'].slice(0, Math.floor(Math.random() * 3) + 1)
+          sentiment: threatResult.isThreat ? 'suspicious' : 'neutral',
+          keywords: threatResult.threatType ? [threatResult.threatType] : [],
+          redFlags: threatResult.threatType ? [threatResult.threatType] : []
         },
-        mlConfidence: Math.random() * 100
+        mlConfidence: threatResult.confidence
       };
     }
   }
@@ -140,14 +155,29 @@ class ThreatAnalysisService implements ThreatAnalysisApi {
       return data;
     } catch (error) {
       console.error('Error scanning file:', error);
-      // Fallback to mock implementation
+      // Fallback to real threat detection implementation
       await new Promise(resolve => setTimeout(resolve, 3000 + Math.random() * 3000));
       
+      // Use real APK threat service
+      const apkService = (await import('../services/apkThreatService')).ApkThreatService.getInstance();
+      const threatResult = await apkService.scanApk(file);
+      
+      // Calculate overall threat score based on real detection
+      let overallScore = 0;
+      if (threatResult.isThreat) {
+        switch(threatResult.threatLevel) {
+          case 'critical': overallScore = 95; break;
+          case 'high': overallScore = 75; break;
+          case 'medium': overallScore = 55; break;
+          case 'low': overallScore = 35; break;
+        }
+      }
+      
       const threatScore = {
-        overall: Math.random() * 100,
-        phishing: Math.random() * 100,
-        malware: Math.random() * 100,
-        fraudulent: Math.random() * 100
+        overall: overallScore,
+        phishing: 10, // Not applicable for files
+        malware: threatResult.details.malware ? 90 : 10,
+        fraudulent: threatResult.details.suspiciousActivities.length > 0 ? 80 : 20
       };
 
       return {
@@ -158,16 +188,16 @@ class ThreatAnalysisService implements ThreatAnalysisApi {
         threatScore,
         status: 'completed',
         computerVision: {
-          similarity: Math.random() * 100,
-          matchedBrands: ['PayPal', 'Amazon', 'Microsoft'].slice(0, Math.floor(Math.random() * 3) + 1),
-          suspiciousElements: ['fake login form', 'typosquatting', 'suspicious redirect'].slice(0, Math.floor(Math.random() * 3) + 1)
+          similarity: 0, // Not applicable for APK analysis
+          matchedBrands: [],
+          suspiciousElements: threatResult.details.suspiciousActivities
         },
         nlpAnalysis: {
-          sentiment: Math.random() > 0.5 ? 'negative' : 'suspicious',
-          keywords: ['urgent', 'verify', 'account', 'password'].slice(0, Math.floor(Math.random() * 4) + 2),
-          redFlags: ['urgency language', 'spelling errors', 'suspicious links'].slice(0, Math.floor(Math.random() * 3) + 1)
+          sentiment: threatResult.isThreat ? 'suspicious' : 'neutral',
+          keywords: threatResult.details.permissions,
+          redFlags: threatResult.details.suspiciousActivities
         },
-        mlConfidence: Math.random() * 100
+        mlConfidence: threatResult.confidence
       };
     }
   }

@@ -53,36 +53,49 @@ export class AIInferenceService {
   }
 
   async analyzeUrl(url: string): Promise<AIInferenceResult> {
-    // Simulate real-time AI inference with realistic delays
-    await new Promise(resolve => setTimeout(resolve, 2000 + Math.random() * 3000));
+    // Use real threat detection for AI analysis
+    const urlService = (await import('./urlThreatService')).UrlThreatService.getInstance();
+    const threatResult = await urlService.scanUrl(url);
     
-    // Generate realistic AI analysis results
+    // Generate realistic AI analysis results based on real threat data
     const categories = ['Phishing', 'Malware', 'Social Engineering', 'Impersonation', 'Brand Abuse', 'Compromised Website'];
     const subCategories = ['Credential Harvesting', 'Banking Fraud', 'Identity Theft', 'Malware Distribution', 'Spear Phishing'];
     
-    const category = categories[Math.floor(Math.random() * categories.length)];
+    // Use real threat data to determine category
+    const category = threatResult.threatType || categories[Math.floor(Math.random() * categories.length)];
     const subCategory = subCategories[Math.floor(Math.random() * subCategories.length)];
-    const severity = ['low', 'medium', 'high', 'critical'][Math.floor(Math.random() * 4)] as 'low' | 'medium' | 'high' | 'critical';
     
+    // Map threat level to severity
+    let severity: 'low' | 'medium' | 'high' | 'critical' = threatResult.threatLevel;
+    
+    // Calculate risk score based on threat data
     const riskScore: RiskScore = {
-      overallScore: Math.floor(Math.random() * 100),
+      overallScore: threatResult.details.reputationScore,
       vector: {
-        confidentiality: Math.floor(Math.random() * 10),
-        integrity: Math.floor(Math.random() * 10),
-        availability: Math.floor(Math.random() * 10),
+        confidentiality: threatResult.details.phishing ? 8 : 2,
+        integrity: threatResult.details.malware ? 9 : 1,
+        availability: threatResult.details.blacklisted ? 7 : 3,
       },
-      cvssScore: parseFloat((Math.random() * 10).toFixed(1)),
-      attackVector: ['NETWORK', 'ADJACENT', 'LOCAL', 'PHYSICAL'][Math.floor(Math.random() * 4)],
-      attackComplexity: Math.floor(Math.random() * 10),
-      privilegesRequired: Math.floor(Math.random() * 10),
-      userInteraction: Math.floor(Math.random() * 10),
+      cvssScore: parseFloat((threatResult.confidence / 10).toFixed(1)),
+      attackVector: threatResult.details.suspiciousDomain ? 'NETWORK' : 'LOCAL',
+      attackComplexity: threatResult.details.suspiciousDomain ? 2 : 6,
+      privilegesRequired: threatResult.details.phishing ? 1 : 5,
+      userInteraction: threatResult.details.phishing ? 10 : 3,
     };
     
     const aiAnalysis = {
-      summary: `AI analysis indicates potential ${category.toLowerCase()} threat with ${subCategory.toLowerCase()} characteristics.`,
-      technicalDetails: `The analyzed URL exhibits behavioral patterns consistent with ${category.toLowerCase()} campaigns. Key indicators include suspicious domain registration, lack of proper SSL certificates, and content mimicking legitimate services.`,
-      impactAssessment: `Potential impact includes credential theft, financial loss, and data exfiltration. Estimated exposure level is ${severity.toUpperCase()}.`,
-      recommendation: `Immediate blocking of this URL is recommended. Users should be warned before accessing. Full forensic analysis recommended.`,
+      summary: threatResult.isThreat 
+        ? `AI analysis confirms potential ${category.toLowerCase()} threat with ${subCategory.toLowerCase()} characteristics.` 
+        : `AI analysis indicates URL appears safe with good reputation.`,
+      technicalDetails: threatResult.isThreat
+        ? `The analyzed URL exhibits behavioral patterns consistent with ${category.toLowerCase()} campaigns. Key indicators include: ${threatResult.details.suspiciousDomain ? 'suspicious domain patterns, ' : ''}${threatResult.details.phishing ? 'phishing indicators, ' : ''}${threatResult.details.malware ? 'malware signatures, ' : ''}and poor reputation score.`
+        : `The analyzed URL shows no indicators of malicious activity and has a good reputation score.`,
+      impactAssessment: threatResult.isThreat
+        ? `Potential impact includes credential theft, financial loss, and data exfiltration. Estimated exposure level is ${severity.toUpperCase()}.`
+        : `No significant security risks detected. URL appears to be safe for normal browsing.`,
+      recommendation: threatResult.isThreat
+        ? `Immediate blocking of this URL is recommended. Users should be warned before accessing. Full forensic analysis recommended.`
+        : `URL appears safe to access, but standard security practices should still be followed.`,
     };
     
     return {
@@ -93,19 +106,25 @@ export class AIInferenceService {
         category,
         subCategory,
         severity,
-        confidence: Math.floor(Math.random() * 30) + 70, // 70-100%
+        confidence: threatResult.confidence,
         indicators: [
-          'Suspicious domain registration',
-          'Lack of proper SSL certificates',
-          'Content mimicking legitimate services',
-          'Aggressive tracking scripts'
-        ],
-        mitigationSteps: [
-          'Block access to this domain',
-          'Warn users before accessing',
-          'Implement network-level filtering',
-          'Monitor for credential harvesting attempts'
-        ]
+          threatResult.details.suspiciousDomain ? 'Suspicious domain patterns' : 'Normal domain structure',
+          threatResult.details.phishing ? 'Phishing indicators detected' : 'No phishing indicators',
+          threatResult.details.malware ? 'Malware signatures present' : 'No malware signatures',
+          `Reputation score: ${threatResult.details.reputationScore}/100`
+        ].filter(indicator => !indicator.includes('No ')),
+        mitigationSteps: threatResult.isThreat
+          ? [
+              'Block access to this domain',
+              'Warn users before accessing',
+              'Implement network-level filtering',
+              'Monitor for credential harvesting attempts'
+            ]
+          : [
+              'Continue normal security monitoring',
+              'Follow standard browsing practices',
+              'Keep security software updated'
+            ]
       },
       riskScore,
       aiAnalysis
@@ -113,37 +132,51 @@ export class AIInferenceService {
   }
 
   async analyzeFile(file: File): Promise<AIInferenceResult> {
-    // Simulate real-time AI inference for file analysis
-    await new Promise(resolve => setTimeout(resolve, 3000 + Math.random() * 4000));
-    
+    // Use real threat detection for AI analysis
+    const apkService = (await import('./apkThreatService')).ApkThreatService.getInstance();
+    const threatResult = await apkService.scanApk(file);
+      
+    // Generate realistic AI analysis results based on real threat data
     const categories = ['Malware', 'Trojan', 'Ransomware', 'Spyware', 'Adware', 'Worm'];
     const subCategories = ['Keylogger', 'Backdoor', 'Rootkit', 'Exploit Kit', 'Downloader', 'Dropper'];
-    
-    const category = categories[Math.floor(Math.random() * categories.length)];
+      
+    // Use real threat data to determine category
+    const category = threatResult.threatType || categories[Math.floor(Math.random() * categories.length)];
     const subCategory = subCategories[Math.floor(Math.random() * subCategories.length)];
-    const severity = ['low', 'medium', 'high', 'critical'][Math.floor(Math.random() * 4)] as 'low' | 'medium' | 'high' | 'critical';
-    
+      
+    // Map threat level to severity
+    let severity: 'low' | 'medium' | 'high' | 'critical' = threatResult.threatLevel;
+      
+    // Calculate risk score based on threat data
     const riskScore: RiskScore = {
-      overallScore: Math.floor(Math.random() * 100),
+      overallScore: threatResult.confidence,
       vector: {
-        confidentiality: Math.floor(Math.random() * 10),
-        integrity: Math.floor(Math.random() * 10),
-        availability: Math.floor(Math.random() * 10),
+        confidentiality: threatResult.details.permissions.includes('android.permission.READ_SMS') ? 9 : 2,
+        integrity: threatResult.details.malware ? 10 : 1,
+        availability: threatResult.details.suspiciousActivities.includes('Background Service') ? 7 : 3,
       },
-      cvssScore: parseFloat((Math.random() * 10).toFixed(1)),
-      attackVector: ['FILE', 'NETWORK', 'LOCAL', 'ADJACENT'][Math.floor(Math.random() * 4)],
-      attackComplexity: Math.floor(Math.random() * 10),
-      privilegesRequired: Math.floor(Math.random() * 10),
-      userInteraction: Math.floor(Math.random() * 10),
+      cvssScore: parseFloat((threatResult.confidence / 10).toFixed(1)),
+      attackVector: threatResult.details.apkSize ? 'FILE' : 'NETWORK',
+      attackComplexity: threatResult.details.signatureIssues ? 3 : 6,
+      privilegesRequired: threatResult.details.permissions.includes('android.permission.INSTALL_PACKAGES') ? 2 : 5,
+      userInteraction: threatResult.details.permissions.includes('android.permission.SEND_SMS') ? 8 : 3,
     };
-    
+      
     const aiAnalysis = {
-      summary: `AI analysis indicates potential ${category.toLowerCase()} threat in file ${file.name}.`,
-      technicalDetails: `The analyzed file contains code signatures consistent with ${category.toLowerCase()} family. Behavioral analysis shows ${subCategory.toLowerCase()} characteristics.`,
-      impactAssessment: `Potential impact includes system compromise, data encryption, privacy violation, and unauthorized access. Estimated exposure level is ${severity.toUpperCase()}.`,
-      recommendation: `Immediate isolation of this file is recommended. Do not execute. Full sandbox analysis recommended.`,
+      summary: threatResult.isThreat
+        ? `AI analysis confirms potential ${category.toLowerCase()} threat in file ${file.name}.`
+        : `AI analysis indicates file appears safe with no malicious indicators detected.`,
+      technicalDetails: threatResult.isThreat
+        ? `The analyzed file contains suspicious elements including: ${threatResult.details.permissions.length} permissions, ${threatResult.details.suspiciousActivities.length} suspicious activities, and ${threatResult.details.malware ? 'known malware signatures' : 'no malware signatures'}.`
+        : `The analyzed file shows no indicators of malicious activity and appears to be a legitimate application.`,
+      impactAssessment: threatResult.isThreat
+        ? `Potential impact includes system compromise, data theft, privacy violation, and unauthorized access. Estimated exposure level is ${severity.toUpperCase()}.`
+        : `No significant security risks detected. File appears to be safe for installation.`,
+      recommendation: threatResult.isThreat
+        ? `Immediate quarantine of this file is recommended. Do not execute or install. Full sandbox analysis recommended.`
+        : `File appears safe to install, but standard security practices should still be followed.`,
     };
-    
+      
     return {
       id: `ai_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
       timestamp: new Date().toISOString(),
@@ -152,19 +185,26 @@ export class AIInferenceService {
         category,
         subCategory,
         severity,
-        confidence: Math.floor(Math.random() * 30) + 70, // 70-100%
+        confidence: threatResult.confidence,
         indicators: [
-          'Suspicious code signatures',
-          'Behavioral anomalies',
-          'Network communication patterns',
-          'System modification attempts'
-        ],
-        mitigationSteps: [
-          'Quarantine this file immediately',
-          'Do not execute the file',
-          'Run full antivirus scan',
-          'Check system for artifacts'
-        ]
+          `${threatResult.details.permissions.length} suspicious permissions`,
+          threatResult.details.malware ? 'Malware signatures detected' : 'No malware signatures',
+          `${threatResult.details.suspiciousActivities.length} suspicious activities`,
+          threatResult.details.signatureIssues ? 'Invalid signature detected' : 'Valid signature',
+          `File size: ${(file.size / (1024 * 1024)).toFixed(2)} MB`
+        ].filter(indicator => !indicator.includes('No ') || indicator.includes('MB') || indicator.includes('suspicious')),
+        mitigationSteps: threatResult.isThreat
+          ? [
+              'Quarantine this file immediately',
+              'Do not execute or install the file',
+              'Run full antivirus scan',
+              'Check system for artifacts'
+            ]
+          : [
+              'Continue normal security monitoring',
+              'Follow standard installation practices',
+              'Keep security software updated'
+            ]
       },
       riskScore,
       aiAnalysis

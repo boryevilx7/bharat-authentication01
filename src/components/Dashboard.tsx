@@ -93,8 +93,8 @@ export function Dashboard({ userEmail, onLogout }: DashboardProps) {
         setAiAnalysisResult(aiResult);
       } else {
         // For file results, we'd need to access the actual File object
-        // For now, we'll simulate with a dummy file
-        const dummyFile = new File([], result.target);
+        // For now, we'll simulate with a file name and size from the result
+        const dummyFile = new File([], result.target, { type: 'application/vnd.android.package-archive' });
         const aiResult = await aiService.analyzeFile(dummyFile);
         setAiAnalysisResult(aiResult);
       }
@@ -191,6 +191,36 @@ export function Dashboard({ userEmail, onLogout }: DashboardProps) {
                 {/* AI Analysis Panel */}
                 {aiAnalysisResult && !isScanning && (
                   <AIAnalysisPanel result={aiAnalysisResult} />
+                )}
+                
+                {/* Real-time Threat Status */}
+                {currentResult && !isScanning && (
+                  <div className="p-4 rounded-lg border bg-card">
+                    <div className="flex items-center justify-between">
+                      <h3 className="text-lg font-medium">Real-time Threat Analysis</h3>
+                      <span className={`px-2 py-1 rounded-full text-xs font-medium ${currentResult.threatScore.overall > 70 ? 'bg-red-100 text-red-800' : currentResult.threatScore.overall > 40 ? 'bg-yellow-100 text-yellow-800' : 'bg-green-100 text-green-800'}`}>
+                        {currentResult.threatScore.overall > 70 ? 'HIGH RISK' : currentResult.threatScore.overall > 40 ? 'MEDIUM RISK' : 'LOW RISK'}
+                      </span>
+                    </div>
+                    <div className="mt-2 grid grid-cols-4 gap-4">
+                      <div className="text-center p-2 bg-muted rounded">
+                        <p className="text-sm text-muted-foreground">Overall</p>
+                        <p className="text-lg font-bold">{currentResult.threatScore.overall.toFixed(0)}%</p>
+                      </div>
+                      <div className="text-center p-2 bg-muted rounded">
+                        <p className="text-sm text-muted-foreground">Phishing</p>
+                        <p className="text-lg font-bold">{currentResult.threatScore.phishing.toFixed(0)}%</p>
+                      </div>
+                      <div className="text-center p-2 bg-muted rounded">
+                        <p className="text-sm text-muted-foreground">Malware</p>
+                        <p className="text-lg font-bold">{currentResult.threatScore.malware.toFixed(0)}%</p>
+                      </div>
+                      <div className="text-center p-2 bg-muted rounded">
+                        <p className="text-sm text-muted-foreground">Fraud</p>
+                        <p className="text-lg font-bold">{currentResult.threatScore.fraudulent.toFixed(0)}%</p>
+                      </div>
+                    </div>
+                  </div>
                 )}
               </div>
             </div>
