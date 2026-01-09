@@ -5,7 +5,7 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { Loader2, Search, Upload, FileUp } from 'lucide-react';
-import { threatAnalysisApi } from '@/api/threatAnalysisApi';
+import { threatAnalysisApi } from '@/lib/api';
 import { ScanResult } from '@/utils/mockApi';
 import { toast } from 'sonner';
 import { cn } from '@/lib/utils';

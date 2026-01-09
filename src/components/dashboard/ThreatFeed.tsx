@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Badge } from '@/components/ui/badge';
-import { threatAnalysisApi } from '@/api/threatAnalysisApi';
+import { threatAnalysisApi } from '@/lib/api';
 import { ThreatFeedItem, ScanResult } from '@/utils/mockApi';
 import { AlertTriangle, Shield, Activity, ChevronRight } from 'lucide-react';
 
