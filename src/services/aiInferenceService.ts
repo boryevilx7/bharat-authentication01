@@ -70,8 +70,11 @@ export class AIInferenceService {
     let severity: 'low' | 'medium' | 'high' | 'critical' = threatResult.threatLevel;
     
     // Calculate risk score based on threat data
+    // For risk scoring, a lower reputation score means higher risk
+    const calculatedRiskScore = threatResult.isThreat ? (100 - threatResult.details.reputationScore) : (100 - threatResult.details.reputationScore);
+    
     const riskScore: RiskScore = {
-      overallScore: threatResult.details.reputationScore,
+      overallScore: calculatedRiskScore,
       cvssScore: parseFloat((threatResult.confidence / 10).toFixed(1)),
       attackVector: threatResult.details.suspiciousDomain ? 'NETWORK' : 'LOCAL',
       attackComplexity: threatResult.details.suspiciousDomain ? 2 : 6,

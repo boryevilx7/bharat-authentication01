@@ -77,29 +77,50 @@ export class UrlThreatService {
       /goo\.gl/,
     ];
 
-    // Check for typosquatting
-    const legitimateDomains = ['paypal.com', 'amazon.com', 'microsoft.com', 'google.com', 'apple.com'];
+    // Check for typosquatting and brand impersonation
+    const legitimateDomains = ['paypal.com', 'amazon.com', 'microsoft.com', 'google.com', 'apple.com', 'facebook.com', 'twitter.com', 'instagram.com', 'netflix.com', 'adobe.com'];
     for (const domain of legitimateDomains) {
       if (lowerUrl.includes(domain.replace('.', '-')) || 
           lowerUrl.includes(domain.replace('.', '')) ||
-          lowerUrl.includes(domain.replace('.', '_'))) {
+          lowerUrl.includes(domain.replace('.', '_')) ||
+          lowerUrl.includes(domain.split('.')[0])) { // Also catch if only the first part is used
         response.isThreat = true;
         response.threatType = 'Brand Impersonation';
         response.threatLevel = 'high';
         response.details.suspiciousDomain = true;
+        response.details.phishing = true;
         response.confidence = 90;
         break;
       }
+    }
+    
+    // Additional specific phishing checks
+    if (lowerUrl.includes('phishing') || lowerUrl.includes('credential') || lowerUrl.includes('password') || lowerUrl.includes('account') || lowerUrl.includes('verification')) {
+      response.isThreat = true;
+      response.threatType = 'Phishing';
+      if (response.threatLevel !== 'high') {
+        response.threatLevel = 'high';
+        response.confidence = Math.max(response.confidence, 85);
+      }
+      response.details.phishing = true;
     }
 
     // Check for suspicious patterns
     for (const pattern of suspiciousPatterns) {
       if (pattern.test(lowerUrl)) {
         response.isThreat = true;
-        response.threatType = 'Suspicious Pattern';
-        if (response.threatLevel === 'low') response.threatLevel = 'medium';
+        if (response.threatLevel === 'low') {
+          if (pattern.source.includes('phish') || pattern.source.includes('login') || pattern.source.includes('signin') || pattern.source.includes('secure') || pattern.source.includes('bank') || pattern.source.includes('paypal') || pattern.source.includes('amazon')) {
+            response.threatLevel = 'high';
+            response.threatType = 'Phishing';
+            response.confidence = Math.max(response.confidence, 85);
+          } else {
+            response.threatLevel = 'medium';
+            response.threatType = 'Suspicious Pattern';
+            response.confidence = Math.max(response.confidence, 75);
+          }
+        }
         response.details.suspiciousDomain = true;
-        response.confidence = Math.max(response.confidence, 75);
       }
     }
 
