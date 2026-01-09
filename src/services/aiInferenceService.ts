@@ -33,6 +33,8 @@ export interface AIInferenceResult {
     technicalDetails: string;
     impactAssessment: string;
     recommendation: string;
+    maliciousContent?: string;
+    specificRecommendations?: string[];
   };
 }
 
@@ -91,14 +93,26 @@ export class AIInferenceService {
         ? `AI analysis confirms potential ${category.toLowerCase()} threat with ${subCategory.toLowerCase()} characteristics.` 
         : `AI analysis indicates URL appears safe with good reputation.`,
       technicalDetails: threatResult.isThreat
-        ? `The analyzed URL exhibits behavioral patterns consistent with ${category.toLowerCase()} campaigns. Key indicators include: ${threatResult.details.suspiciousDomain ? 'suspicious domain patterns, ' : ''}${threatResult.details.phishing ? 'phishing indicators, ' : ''}${threatResult.details.malware ? 'malware signatures, ' : ''}and poor reputation score.`
+        ? `The analyzed URL exhibits behavioral patterns consistent with ${category.toLowerCase()} campaigns. Key indicators include: ${threatResult.details.suspiciousDomain ? 'suspicious domain patterns, ' : ''}${threatResult.details.phishing ? 'phishing indicators, ' : ''}${threatResult.details.malware ? 'malware signatures, ' : ''}and poor reputation score. Malicious content detected: ${threatResult.confidence}% probability.`
         : `The analyzed URL shows no indicators of malicious activity and has a good reputation score.`,
+      maliciousContent: threatResult.isThreat ? `Malicious content detected with ${threatResult.confidence}% probability. ${threatResult.threatType ? threatResult.threatType + ' threat' : 'Security risk'} identified.` : 'No malicious content detected.',
       impactAssessment: threatResult.isThreat
         ? `Potential impact includes credential theft, financial loss, and data exfiltration. Estimated exposure level is ${severity.toUpperCase()}.`
         : `No significant security risks detected. URL appears to be safe for normal browsing.`,
       recommendation: threatResult.isThreat
-        ? `Immediate blocking of this URL is recommended. Users should be warned before accessing. Full forensic analysis recommended.`
+        ? `${threatResult.threatType ? threatResult.threatType + ' detected. ' : ''}Immediate blocking of this URL is recommended. Users should be warned before accessing. Full forensic analysis recommended. Change passwords if any credentials were entered on this site.`
         : `URL appears safe to access, but standard security practices should still be followed.`,
+      specificRecommendations: threatResult.isThreat ? [
+        'Block access to this domain immediately',
+        'Warn all users about this threat',
+        'Reset passwords if credentials were entered',
+        'Scan systems that accessed this URL',
+        'Monitor for data breaches'
+      ] : [
+        'Continue normal security monitoring',
+        'Follow standard browsing practices',
+        'Keep security software updated'
+      ],
     };
     
     return {
@@ -173,16 +187,28 @@ export class AIInferenceService {
         ? `AI analysis confirms potential ${category.toLowerCase()} threat in file ${file.name}.`
         : `AI analysis indicates file appears safe with no malicious indicators detected.`,
       technicalDetails: threatResult.isThreat
-        ? `The analyzed file contains suspicious elements including: ${threatResult.details.permissions.length} permissions, ${threatResult.details.suspiciousActivities.length} suspicious activities, and ${threatResult.details.malware ? 'known malware signatures' : 'no malware signatures'}.`
+        ? `The analyzed file contains suspicious elements including: ${threatResult.details.permissions.length} permissions, ${threatResult.details.suspiciousActivities.length} suspicious activities, and ${threatResult.details.malware ? 'known malware signatures' : 'no malware signatures'}. Malicious content detected: ${threatResult.confidence}% probability.`
         : `The analyzed file shows no indicators of malicious activity and appears to be a legitimate application.`,
+      maliciousContent: threatResult.isThreat ? `Malicious content detected with ${threatResult.confidence}% probability. ${threatResult.threatType ? threatResult.threatType + ' threat' : 'Security risk'} identified.` : 'No malicious content detected.',
       impactAssessment: threatResult.isThreat
         ? `Potential impact includes system compromise, data theft, privacy violation, and unauthorized access. Estimated exposure level is ${severity.toUpperCase()}.`
         : `No significant security risks detected. File appears to be safe for installation.`,
       recommendation: threatResult.isThreat
-        ? `Immediate quarantine of this file is recommended. Do not execute or install. Full sandbox analysis recommended.`
+        ? `${threatResult.threatType ? threatResult.threatType + ' detected. ' : ''}Immediate quarantine of this file is recommended. Do not execute or install. Full sandbox analysis recommended. Scan device if file was opened.`
         : `File appears safe to install, but standard security practices should still be followed.`,
+      specificRecommendations: threatResult.isThreat ? [
+        'Quarantine this file immediately',
+        'Do not execute or install this file',
+        'Scan device if file was opened',
+        'Check system for malware',
+        'Change passwords as precautionary measure'
+      ] : [
+        'Continue normal security monitoring',
+        'Follow standard installation practices',
+        'Keep security software updated'
+      ],
     };
-      
+        
     return {
       id: `ai_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
       timestamp: new Date().toISOString(),

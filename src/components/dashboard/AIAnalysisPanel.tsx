@@ -192,6 +192,10 @@ export const AIAnalysisPanel = ({ result }: AIAnalysisPanelProps) => {
               <p className="text-sm">{result.aiAnalysis.technicalDetails}</p>
             </div>
             <div>
+              <p className="text-sm font-medium text-muted-foreground">Malicious Content Detection</p>
+              <p className="text-sm font-semibold text-red-600">{result.aiAnalysis.maliciousContent || 'No malicious content detected.'}</p>
+            </div>
+            <div>
               <p className="text-sm font-medium text-muted-foreground">Impact Assessment</p>
               <p className="text-sm">{result.aiAnalysis.impactAssessment}</p>
             </div>
@@ -203,14 +207,30 @@ export const AIAnalysisPanel = ({ result }: AIAnalysisPanelProps) => {
             <BarChart3 className="h-4 w-4" />
             Mitigation Recommendations
           </h3>
-          <ul className="space-y-2">
-            {result.threatTaxonomy.mitigationSteps.map((step, index) => (
-              <li key={index} className="flex items-start gap-2">
-                <div className="h-1.5 w-1.5 bg-primary rounded-full mt-2 flex-shrink-0"></div>
-                <span className="text-sm">{step}</span>
-              </li>
-            ))}
-          </ul>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <h4 className="font-medium text-sm mb-2 text-muted-foreground">Recommended Actions</h4>
+              <ul className="space-y-2">
+                {result.threatTaxonomy.mitigationSteps.map((step, index) => (
+                  <li key={index} className="flex items-start gap-2">
+                    <div className="h-1.5 w-1.5 bg-primary rounded-full mt-2 flex-shrink-0"></div>
+                    <span className="text-sm">{step}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+            <div>
+              <h4 className="font-medium text-sm mb-2 text-muted-foreground">Additional Recommendations</h4>
+              <ul className="space-y-2">
+                {(result.aiAnalysis.specificRecommendations || []).map((rec, index) => (
+                  <li key={index} className="flex items-start gap-2">
+                    <div className="h-1.5 w-1.5 bg-red-500 rounded-full mt-2 flex-shrink-0"></div>
+                    <span className="text-sm">{rec}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
         </div>
       </CardContent>
     </Card>
